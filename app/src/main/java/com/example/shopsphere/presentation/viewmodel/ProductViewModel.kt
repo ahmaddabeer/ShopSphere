@@ -31,12 +31,8 @@ class ProductViewModel @Inject constructor(
 
     val uiStateDetail = _uiStateDetail.asStateFlow()
     val uiState = _uiState.asStateFlow()
-    private val _products = MutableStateFlow<List<Product>>(emptyList())
-    val products: StateFlow<List<Product>> = _products
 
 
-    private val _isLoadig = MutableStateFlow(false)
-    val isLoading: StateFlow<Boolean> = _isLoadig
 
 
     private val _error = MutableStateFlow<String?>(null)

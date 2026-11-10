@@ -2,7 +2,7 @@ package com.example.shopsphere.presentation.uistate
 
 import com.example.shopsphere.data.model.Product
 
-interface ProductDetailUiState {
+sealed interface ProductDetailUiState {
 
 
     data object Loading: ProductDetailUiState

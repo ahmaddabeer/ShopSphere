@@ -1,9 +1,9 @@
+
 package com.example.shopsphere.presentation.screen.detail
 
-import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -11,13 +11,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextDecoration
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
-import com.example.shopsphere.R
+import coil3.compose.AsyncImage
+import com.example.shopsphere.presentation.uistate.ProductDetailUiState
+import com.example.shopsphere.presentation.viewmodel.ProductViewModel
 import dev.seyfarth.tablericons.TablerIcons
 import dev.seyfarth.tablericons.outlined.ArrowBack
 import dev.seyfarth.tablericons.outlined.ShoppingBag
@@ -27,11 +28,20 @@ private val LightBackground = Color(0xFFF5F7F5)
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ProductDetailScreen(controller: NavController,id:Int) {
+fun ProductDetailScreen(
+    controller: NavController,
+    id: Int
+) {
 
     var selectedSize by remember { mutableStateOf("M") }
 
+    val viewModel: ProductViewModel = hiltViewModel()
 
+    val detailUiState by viewModel.uiStateDetail.collectAsStateWithLifecycle()
+
+    LaunchedEffect(id) {
+        viewModel.getProductById(id)
+    }
 
     Scaffold(
         topBar = {
@@ -43,7 +53,11 @@ fun ProductDetailScreen(controller: NavController,id:Int) {
                     )
                 },
                 navigationIcon = {
-                    IconButton(onClick = {}) {
+                    IconButton(
+                        onClick = {
+                            controller.popBackStack()
+                        }
+                    ) {
                         Icon(
                             imageVector = TablerIcons.Outlined.ArrowBack,
                             contentDescription = "Back"
@@ -60,239 +74,199 @@ fun ProductDetailScreen(controller: NavController,id:Int) {
                 }
             )
         },
+
         bottomBar = {
-            Button(
-                onClick = {},
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp, vertical = 12.dp)
-                    .height(52.dp),
-                shape = RoundedCornerShape(12.dp),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = Green
-                )
-            ) {
-                Text(
-                    text = "Add to Cart",
-                    fontWeight = FontWeight.SemiBold
-                )
-            }
-        }
-    ) { innerPadding ->
-
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(innerPadding)
-                .padding(horizontal = 16.dp)
-                .padding(top = 8.dp)
-        ) {
-
-            // Product Image
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(230.dp)
-                    .background(
-                        LightBackground,
-                        RoundedCornerShape(16.dp)
-                    ),
-                contentAlignment = Alignment.Center
-            ) {
-                Image(
-                    painter = painterResource(
-                        R.drawable.ic_launcher_background
-                    ),
-                    contentDescription = "Product Image",
-                    modifier = Modifier.fillMaxSize(),
-                    contentScale = ContentScale.Fit
-                )
-
-                Text(
-                    text = "20% OFF",
+            if (detailUiState is ProductDetailUiState.Success) {
+                Button(
+                    onClick = {},
                     modifier = Modifier
-                        .align(Alignment.TopStart)
-                        .padding(12.dp)
-                        .background(
-                            Color(0xFFE85D5D),
-                            RoundedCornerShape(6.dp)
-                        )
-                        .padding(
-                            horizontal = 10.dp,
-                            vertical = 5.dp
-                        ),
-                    color = Color.White,
-                    style = MaterialTheme.typography.labelMedium
-                )
-            }
-
-            // Image Indicators
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 8.dp),
-                horizontalArrangement = Arrangement.Center
-            ) {
-                repeat(3) { index ->
-                    Box(
-                        modifier = Modifier
-                            .padding(horizontal = 4.dp)
-                            .size(if (index == 0) 9.dp else 7.dp)
-                            .background(
-                                if (index == 0) Green else Color.LightGray,
-                                RoundedCornerShape(50)
-                            )
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp)
+                        .padding(top = 12.dp, bottom = 12.dp)
+                        .height(52.dp),
+                    shape = RoundedCornerShape(12.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Green
+                    )
+                ) {
+                    Text(
+                        text = "Add to Cart",
+                        fontWeight = FontWeight.SemiBold
                     )
                 }
             }
+        }
 
-            // Product Name
-            Text(
-                text = "Yellow Sweatshirt",
-                style = MaterialTheme.typography.titleLarge,
-                fontWeight = FontWeight.Bold
-            )
+    ) { innerPadding ->
 
-            Spacer(modifier = Modifier.height(8.dp))
+        when (val state = detailUiState) {
 
-            // Price
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(10.dp)
-            ) {
-                Text(
-                    text = "$39.99",
-                    style = MaterialTheme.typography.titleLarge,
-                    color = Green,
-                    fontWeight = FontWeight.Bold
-                )
+            // LOADING STATE
+            is ProductDetailUiState.Loading -> {
 
-                Text(
-                    text = "$49.99",
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = Color.Gray,
-                    textDecoration = TextDecoration.LineThrough
-                )
-
-                Text(
-                    text = "20% OFF",
-                    color = Green,
-                    style = MaterialTheme.typography.labelMedium
-                )
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(innerPadding),
+                    contentAlignment = Alignment.Center
+                ) {
+                    CircularProgressIndicator(color = Green)
+                }
             }
 
-            Spacer(modifier = Modifier.height(8.dp))
+            // SUCCESS STATE
+            is ProductDetailUiState.Success -> {
 
-            // Rating
-            Row(
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Text(
-                    text = "★ 4.5",
-                    color = Color(0xFFE6A12B),
-                    fontWeight = FontWeight.Bold
-                )
+                val product = state.product
 
-                Spacer(modifier = Modifier.width(8.dp))
+                LazyColumn(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(innerPadding)
+                        .padding(horizontal = 16.dp),
+                    contentPadding = PaddingValues(vertical = 12.dp)
+                ) {
 
-                Text(
-                    text = "(120 Reviews)",
-                    color = Color.Gray,
-                    style = MaterialTheme.typography.bodySmall
-                )
-            }
+                    item {
 
-            Spacer(modifier = Modifier.height(16.dp))
+                        // Product Image
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(230.dp)
+                                .background(
+                                    LightBackground,
+                                    RoundedCornerShape(16.dp)
+                                ),
+                            contentAlignment = Alignment.Center
+                        ) {
 
-            HorizontalDivider()
+                            AsyncImage(
+                                model = product.thumbnail,
+                                contentDescription = product.title,
+                                modifier = Modifier.fillMaxSize(),
+                                contentScale = ContentScale.Fit
+                            )
 
-            Spacer(modifier = Modifier.height(12.dp))
+                            Text(
+                                text = "10% OFF",
+                                modifier = Modifier
+                                    .align(Alignment.TopStart)
+                                    .padding(12.dp)
+                                    .background(
+                                        Color(0xFFE85D5D),
+                                        RoundedCornerShape(6.dp)
+                                    )
+                                    .padding(
+                                        horizontal = 10.dp,
+                                        vertical = 5.dp
+                                    ),
+                                color = Color.White,
+                                style = MaterialTheme.typography.labelMedium
+                            )
+                        }
 
-            // Description
-            Text(
-                text = "Description",
-                style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.SemiBold
-            )
+                        Spacer(modifier = Modifier.height(16.dp))
 
-            Spacer(modifier = Modifier.height(6.dp))
-
-            Text(
-                text = "Comfortable and stylish yellow sweatshirt made with premium quality fabric for everyday wear.",
-                style = MaterialTheme.typography.bodyMedium,
-                color = Color.Gray
-            )
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            // Size Selection
-            Text(
-                text = "Select Size",
-                style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.SemiBold
-            )
-
-            Spacer(modifier = Modifier.height(10.dp))
-
-            Row(
-                horizontalArrangement = Arrangement.spacedBy(10.dp)
-            ) {
-                listOf("S", "M", "L", "XL").forEach { size ->
-
-                    val isSelected = selectedSize == size
-
-                    OutlinedButton(
-                        onClick = {
-                            selectedSize = size
-                        },
-                        modifier = Modifier.size(48.dp),
-                        shape = RoundedCornerShape(10.dp),
-                        contentPadding = PaddingValues(0.dp),
-                        border = BorderStroke(
-                            1.dp,
-                            if (isSelected) Green else Color.LightGray
-                        ),
-                        colors = ButtonDefaults.outlinedButtonColors(
-                            containerColor = if (isSelected)
-                                Green.copy(alpha = 0.1f)
-                            else Color.Transparent
-                        )
-                    ) {
+                        // Product Name
                         Text(
-                            text = size,
-                            color = if (isSelected) Green else Color.DarkGray,
+                            text = product.title,
+                            style = MaterialTheme.typography.titleLarge,
+                            fontWeight = FontWeight.Bold
+                        )
+
+                        Spacer(modifier = Modifier.height(8.dp))
+
+                        // Product Price
+                        Text(
+                            text = "$ ${product.price}",
+                            style = MaterialTheme.typography.titleLarge,
+                            color = Green,
+                            fontWeight = FontWeight.Bold
+                        )
+
+                        Spacer(modifier = Modifier.height(8.dp))
+
+                        // Product Rating
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Text(
+                                text = "★ ${product.rating}",
+                                color = Color(0xFFE6A12B),
+                                fontWeight = FontWeight.Bold
+                            )
+                        }
+
+                        Spacer(modifier = Modifier.height(16.dp))
+
+                        HorizontalDivider()
+
+                        Spacer(modifier = Modifier.height(12.dp))
+
+                        // Product Description
+                        Text(
+                            text = "Description",
+                            style = MaterialTheme.typography.titleMedium,
                             fontWeight = FontWeight.SemiBold
                         )
+
+                        Spacer(modifier = Modifier.height(6.dp))
+
+                        Text(
+                            text = product.description,
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = Color.Gray
+                        )
+
+                        Spacer(modifier = Modifier.height(16.dp))
+
+                        // Product Category
+                        Text(
+                            text = "Category",
+                            style = MaterialTheme.typography.titleMedium,
+                            fontWeight = FontWeight.SemiBold
+                        )
+
+                        Spacer(modifier = Modifier.height(6.dp))
+
+                        Text(
+                            text = product.category,
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = Color.Gray
+                        )
+
+                        Spacer(modifier = Modifier.height(24.dp))
                     }
                 }
             }
 
-            Spacer(modifier = Modifier.height(16.dp))
+            // ERROR STATE
+            is ProductDetailUiState.Error -> {
 
-            // Color Selection
-            Text(
-                text = "Select Color",
-                style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.SemiBold
-            )
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(innerPadding)
+                        .padding(16.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center
+                ) {
 
-            Spacer(modifier = Modifier.height(10.dp))
-
-            Row(
-                horizontalArrangement = Arrangement.spacedBy(14.dp)
-            ) {
-                listOf(
-                    Color(0xFFFFD54F),
-                    Color.DarkGray,
-                    Color(0xFFEF9A9A),
-                    Color(0xFF90CAF9)
-                ).forEach { color ->
-
-                    Box(
-                        modifier = Modifier
-                            .size(30.dp)
-                            .background(color, RoundedCornerShape(50))
+                    Text(
+                        text = state.message,
+                        color = Color.Red
                     )
+
+                    Spacer(modifier = Modifier.height(12.dp))
+
+                    Button(
+                        onClick = {
+                            viewModel.getProductById(id)
+                        }
+                    ) {
+                        Text("Retry")
+                    }
                 }
             }
         }
