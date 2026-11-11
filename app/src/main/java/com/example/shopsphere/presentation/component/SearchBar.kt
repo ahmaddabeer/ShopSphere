@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -27,28 +26,56 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
+import com.example.shopsphere.presentation.navigation.Route
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SearchBar(modifier: Modifier = Modifier) {
+fun SearchBar(controller: NavController) {
     // 1. States मैनेज करना
     var text by rememberSaveable { mutableStateOf("") } // सर्च इनपुट टेक्स्ट
     var active by rememberSaveable { mutableStateOf(false) } // सर्च बार ओपन है या नहीं
 
+
+    val modifier = Modifier
     // 1. Search History ki list (Shopping Items)
     val searchHistory = remember {
-        mutableStateListOf("Mobile", "Laptop", "Smart TV", "Refrigerator")
+        mutableStateListOf(
+            "mens-shoes",
+            "laptops",
+            "mens-shirts",
+            "smartphones",
+            "furniture",
+            "beauty",
+            "fragrances",
+            "groceries",
+            "mens-watches",
+            "sunglasses",
+            "smartphones",
+            "tablets",
+            "home-decoration",
+            "sports-accessories",
+            "womens-dresses"
+        )
     }
 
 // 2. All Items ki static list (Shopping Suggestions/Catalog)
     val allItems = listOf(
-        "Samsung Galaxy Mobile",
-        "Apple MacBook Laptop",
-        "LG Double Door Refrigerator",
-        "Sony 4K Smart TV",
-        "Sony Wireless Headphones",
-        "iPad Air Tablet",
-        "Fully Automatic Washing Machine"
+        "mens-shoes",
+        "laptops",
+        "mens-shirts",
+        "smartphones",
+        "furniture",
+        "beauty",
+        "fragrances",
+        "groceries",
+        "mens-watches",
+        "sunglasses",
+        "smartphones",
+        "tablets",
+        "home-decoration",
+        "sports-accessories",
+        "womens-dresses"
     )
 
     // लाइव फ़िल्टर किया हुआ डेटा
@@ -101,9 +128,13 @@ fun SearchBar(modifier: Modifier = Modifier) {
                         Row(
                             modifier = Modifier
                                 .fillMaxWidth()
+
                                 .clickable {
                                     text = historyItem
                                     active = true
+                                    controller.navigate(Route.CategoryDetailScreen(historyItem))
+
+
                                 }
                                 .padding(vertical = 12.dp)
                         ) {
@@ -116,20 +147,29 @@ fun SearchBar(modifier: Modifier = Modifier) {
                         }
                     }
                 } else {
+
                     // जब यूजर टाइप कर रहा हो, तो 'लाइव फ़िल्टर्ड रिजल्ट्स' दिखाएं
                     items(filteredItems) { item ->
+
                         Text(
                             text = item,
                             modifier = Modifier
                                 .fillMaxWidth()
+
                                 .clickable {
                                     text = item
                                     active = false
+                                    controller.navigate(Route.CategoryDetailScreen(item))
+
+
                                 }
                                 .padding(vertical = 12.dp, horizontal = 8.dp)
                         )
+
+
                     }
                 }
+
             }
         }
     }

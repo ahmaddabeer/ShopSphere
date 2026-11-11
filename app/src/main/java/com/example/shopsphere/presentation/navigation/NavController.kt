@@ -5,6 +5,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
+import com.example.shopsphere.presentation.component.SearchBar
 import com.example.shopsphere.presentation.screen.CategoryDetailScreen
 import com.example.shopsphere.presentation.screen.detail.ProductDetailScreen
 import com.example.shopsphere.presentation.screen.home.HomeScreen
@@ -42,6 +43,13 @@ fun NavController() {
 
 
             CategoryDetailScreen(controller,route.category)
+        }
+
+        composable<Route.SearchBar>{
+
+
+
+            SearchBar(controller)
         }
 
 

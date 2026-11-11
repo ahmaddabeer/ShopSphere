@@ -18,6 +18,11 @@ sealed class Route {
     )
 
 
+
+    @Serializable
+    object SearchBar: Route(
+    )
+
     @Serializable
     data class CategoryDetailScreen(
         val category: String

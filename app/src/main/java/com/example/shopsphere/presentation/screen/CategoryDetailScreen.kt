@@ -28,6 +28,7 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.example.shopsphere.presentation.component.ProductCard
+import com.example.shopsphere.presentation.navigation.Route
 import com.example.shopsphere.presentation.uistate.CategoryDetailUiState
 import com.example.shopsphere.presentation.viewmodel.ProductViewModel
 import dev.seyfarth.tablericons.TablerIcons
@@ -65,7 +66,7 @@ fun CategoryDetailScreen(
             CenterAlignedTopAppBar(
                 title = {
                     Text(
-                        text = "Product Detail",
+                        text = category.replaceFirstChar { it.uppercase() },
                         style = MaterialTheme.typography.titleLarge
                     )
                 },
@@ -125,7 +126,7 @@ fun CategoryDetailScreen(
 
                     items(state.product) {item ->
 
-                        ProductCard(item, {})
+                        ProductCard(item, {controller.navigate(Route.ProductDetailScreen(item.id))})
                     }
 
 

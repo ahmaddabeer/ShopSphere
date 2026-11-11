@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
@@ -75,21 +76,71 @@ fun HomeScreen(controller: NavController) {
 
     val CategoryItemList = listOf(
         CategoryItem("Shoes", TablerIcons.Outlined.Shoe, productColors.random(), "mens-shoes"),
-        CategoryItem("Laptop", TablerIcons.Outlined.DeviceLaptop, productColors.random(), "laptops"),
+        CategoryItem(
+            "Laptop",
+            TablerIcons.Outlined.DeviceLaptop,
+            productColors.random(),
+            "laptops"
+        ),
         CategoryItem("Clothing", TablerIcons.Outlined.Shirt, productColors.random(), "mens-shirts"),
-        CategoryItem("Electronics", TablerIcons.Outlined.DeviceLaptop, productColors.random(), "smartphones"),
+        CategoryItem(
+            "Electronics",
+            TablerIcons.Outlined.DeviceLaptop,
+            productColors.random(),
+            "smartphones"
+        ),
         CategoryItem("Home", TablerIcons.Outlined.Home, productColors.random(), "furniture"),
 
         CategoryItem("Beauty", TablerIcons.Outlined.Brush, productColors.random(), "beauty"),
-        CategoryItem("Fragrances", TablerIcons.Outlined.Spray, productColors.random(), "fragrances"),
-        CategoryItem("Groceries", TablerIcons.Outlined.ShoppingCart, productColors.random(), "groceries"),
+        CategoryItem(
+            "Fragrances",
+            TablerIcons.Outlined.Spray,
+            productColors.random(),
+            "fragrances"
+        ),
+        CategoryItem(
+            "Groceries",
+            TablerIcons.Outlined.ShoppingCart,
+            productColors.random(),
+            "groceries"
+        ),
         CategoryItem("Watches", TablerIcons.Outlined.Clock, productColors.random(), "mens-watches"),
-        CategoryItem("Sunglasses", TablerIcons.Outlined.Sunglasses, productColors.random(), "sunglasses"),
-        CategoryItem("Smartphones", TablerIcons.Outlined.DeviceMobile, productColors.random(), "smartphones"),
-        CategoryItem("Tablets", TablerIcons.Outlined.DeviceTablet, productColors.random(), "tablets"),
-        CategoryItem("Home Decor", TablerIcons.Outlined.Lamp, productColors.random(), "home-decoration"),
-        CategoryItem("Sports", TablerIcons.Outlined.BallFootball, productColors.random(), "sports-accessories"),
-        CategoryItem("Women's Fashion", TablerIcons.Outlined.ClothesRack, productColors.random(), "womens-dresses")
+        CategoryItem(
+            "Sunglasses",
+            TablerIcons.Outlined.Sunglasses,
+            productColors.random(),
+            "sunglasses"
+        ),
+        CategoryItem(
+            "Smartphones",
+            TablerIcons.Outlined.DeviceMobile,
+            productColors.random(),
+            "smartphones"
+        ),
+        CategoryItem(
+            "Tablets",
+            TablerIcons.Outlined.DeviceTablet,
+            productColors.random(),
+            "tablets"
+        ),
+        CategoryItem(
+            "Home Decor",
+            TablerIcons.Outlined.Lamp,
+            productColors.random(),
+            "home-decoration"
+        ),
+        CategoryItem(
+            "Sports",
+            TablerIcons.Outlined.BallFootball,
+            productColors.random(),
+            "sports-accessories"
+        ),
+        CategoryItem(
+            "Women's Fashion",
+            TablerIcons.Outlined.ClothesRack,
+            productColors.random(),
+            "womens-dresses"
+        )
     )
 
 
@@ -111,10 +162,9 @@ fun HomeScreen(controller: NavController) {
 
 
 
-
     Scaffold(
         modifier = Modifier
-            .fillMaxSize()
+
             .padding(horizontal = 8.dp),
 
         topBar = {
@@ -155,120 +205,141 @@ fun HomeScreen(controller: NavController) {
 
         ) { innerPadding ->
 
-        Column(
+        LazyVerticalGrid(
+            GridCells.Fixed(2),
             modifier = Modifier
                 .fillMaxSize()
-                .padding(innerPadding)
+                .padding(innerPadding),
+            verticalArrangement = Arrangement.spacedBy(8.dp)
 
 
         ) {
 
 
-            SearchBar(modifier = Modifier)
-            Spacer(modifier = Modifier.height(20.dp))
-
-            Text(
-                text = "Categories",
-                style = MaterialTheme.typography.titleMedium,
-                modifier = Modifier.padding(start = 16.dp)
-            )
-
-            LazyRow(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(16.dp),
-                contentPadding = PaddingValues(vertical = 8.dp)
-            ) {
-
-
-                items(CategoryItemList) { item ->
-
-                    CategorySection(
-                        item.title,
-                        item.icon,
-                        item.iconColor,
-                        {controller.navigate(Route.CategoryDetailScreen(item.itemCategory))}
-                    )
-
-
-                }
+            item(span = { GridItemSpan(2) }) {
+                SearchBar(controller)
 
             }
 
 
-            Spacer(modifier = Modifier.height(10.dp))
-
-            Text(
-                text = "Featured",
-                style = MaterialTheme.typography.titleMedium,
-                modifier = Modifier.padding(start = 16.dp)
-            )
 
 
+            item(span = { GridItemSpan(2) }) {
+                Spacer(modifier = Modifier.height(20.dp))
 
-            Spacer(modifier = Modifier.height(10.dp))
+                Text(
+                    text = "Categories",
+                    style = MaterialTheme.typography.titleMedium,
+                    modifier = Modifier.padding(start = 16.dp)
+                )
+
+                LazyRow(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(16.dp),
+                    contentPadding = PaddingValues(vertical = 8.dp)
+                ) {
+
+
+                    items(CategoryItemList) { item ->
+
+                        CategorySection(
+                            item.title,
+                            item.icon,
+                            item.iconColor,
+                            { controller.navigate(Route.CategoryDetailScreen(item.itemCategory)) }
+                        )
+
+
+                    }
+
+                }
+            }
+
+
+
+            item(span = { GridItemSpan(2) }) {
+
+                Spacer(modifier = Modifier.height(10.dp))
+
+                Text(
+                    text = "Featured",
+                    style = MaterialTheme.typography.titleMedium,
+                    modifier = Modifier.padding(start = 16.dp)
+                )
+
+
+
+                Spacer(modifier = Modifier.height(10.dp))
+            }
 
 
             //
+
 
             when (val state = listUiState) {
 
                 is ProductListUiState.Loading -> {
 
-                    Box(
-                        modifier = Modifier.fillMaxSize(),
-                        contentAlignment = Alignment.Center
-                    ) {
+                    item(span = { GridItemSpan(2) }) {
 
-                        CircularProgressIndicator()
+                        Box(
+                            modifier = Modifier.fillMaxSize(),
+                            contentAlignment = Alignment.Center
+                        ) {
+
+                            CircularProgressIndicator()
+                        }
                     }
                 }
 
                 is ProductListUiState.Success -> {
 
-                    LazyVerticalGrid(
-                        columns = GridCells.Fixed(2),
-                        modifier = Modifier.fillMaxSize()
-                    ) {
 
+                    items(state.products) { item ->
 
-                        items(state.products) { item ->
-
-                            ProductCard(item,
-                                { controller.navigate(Route.ProductDetailScreen(item.id)) })
-                        }
+                        ProductCard(
+                            item,
+                            { controller.navigate(Route.ProductDetailScreen(item.id)) })
                     }
                 }
 
+
                 is ProductListUiState.Error -> {
 
-                    Box(
-                        modifier = Modifier.fillMaxSize(),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Column(
-                            horizontalAlignment = Alignment.CenterHorizontally
+                    item(span = { GridItemSpan(2) }) {
+
+                        Box(
+                            modifier = Modifier.fillMaxSize(),
+                            contentAlignment = Alignment.Center
                         ) {
-
-                            Text(state.message)
-
-                            Button(
-                                onClick = { viewModel.fetchProducts() }
+                            Column(
+                                horizontalAlignment = Alignment.CenterHorizontally
                             ) {
-                                Text("Retry")
+
+                                Text(state.message)
+
+                                Button(
+                                    onClick = { viewModel.fetchProducts() }
+                                ) {
+                                    Text("Retry")
+                                }
                             }
                         }
                     }
                 }
 
-                is ProductListUiState.Empty ->{
+                is ProductListUiState.Empty -> {
 
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .weight(1f),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Text("No products found")
+                    item(span = { GridItemSpan(2) }) {
+
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth(),
+
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Text("No products found")
+                        }
                     }
 
 
@@ -276,10 +347,14 @@ fun HomeScreen(controller: NavController) {
 
 
             }
+
+
         }
 
 
     }
+
+
 }
 
 
@@ -290,4 +365,4 @@ data class CategoryItem(
     val iconColor: Color,
     val itemCategory: String
 
-    )
+)
