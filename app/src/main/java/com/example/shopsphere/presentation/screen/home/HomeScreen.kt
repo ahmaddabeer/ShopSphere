@@ -41,12 +41,22 @@ import com.example.shopsphere.presentation.navigation.Route
 import com.example.shopsphere.presentation.uistate.ProductListUiState
 import com.example.shopsphere.presentation.viewmodel.ProductViewModel
 import dev.seyfarth.tablericons.TablerIcons
+import dev.seyfarth.tablericons.outlined.BallFootball
+import dev.seyfarth.tablericons.outlined.Brush
+import dev.seyfarth.tablericons.outlined.Clock
+import dev.seyfarth.tablericons.outlined.ClothesRack
 import dev.seyfarth.tablericons.outlined.DeviceLaptop
+import dev.seyfarth.tablericons.outlined.DeviceMobile
+import dev.seyfarth.tablericons.outlined.DeviceTablet
 import dev.seyfarth.tablericons.outlined.Home
+import dev.seyfarth.tablericons.outlined.Lamp
 import dev.seyfarth.tablericons.outlined.Menu
 import dev.seyfarth.tablericons.outlined.Shirt
 import dev.seyfarth.tablericons.outlined.Shoe
 import dev.seyfarth.tablericons.outlined.ShoppingBag
+import dev.seyfarth.tablericons.outlined.ShoppingCart
+import dev.seyfarth.tablericons.outlined.Spray
+import dev.seyfarth.tablericons.outlined.Sunglasses
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -63,13 +73,23 @@ fun HomeScreen(controller: NavController) {
         Color(0xFFFFE0B2)  // Light Orange
     )
 
-// 2. .random() use karke list initialize karein
     val CategoryItemList = listOf(
-        CategoryItem("Shoes", TablerIcons.Outlined.Shoe, productColors.random()),
-        CategoryItem("Laptop", TablerIcons.Outlined.DeviceLaptop, productColors.random()),
-        CategoryItem("Clothing", TablerIcons.Outlined.Shirt, productColors.random()),
-        CategoryItem("Electronics", TablerIcons.Outlined.DeviceLaptop, productColors.random()),
-        CategoryItem("Home", TablerIcons.Outlined.Home, productColors.random()),
+        CategoryItem("Shoes", TablerIcons.Outlined.Shoe, productColors.random(), "mens-shoes"),
+        CategoryItem("Laptop", TablerIcons.Outlined.DeviceLaptop, productColors.random(), "laptops"),
+        CategoryItem("Clothing", TablerIcons.Outlined.Shirt, productColors.random(), "mens-shirts"),
+        CategoryItem("Electronics", TablerIcons.Outlined.DeviceLaptop, productColors.random(), "smartphones"),
+        CategoryItem("Home", TablerIcons.Outlined.Home, productColors.random(), "furniture"),
+
+        CategoryItem("Beauty", TablerIcons.Outlined.Brush, productColors.random(), "beauty"),
+        CategoryItem("Fragrances", TablerIcons.Outlined.Spray, productColors.random(), "fragrances"),
+        CategoryItem("Groceries", TablerIcons.Outlined.ShoppingCart, productColors.random(), "groceries"),
+        CategoryItem("Watches", TablerIcons.Outlined.Clock, productColors.random(), "mens-watches"),
+        CategoryItem("Sunglasses", TablerIcons.Outlined.Sunglasses, productColors.random(), "sunglasses"),
+        CategoryItem("Smartphones", TablerIcons.Outlined.DeviceMobile, productColors.random(), "smartphones"),
+        CategoryItem("Tablets", TablerIcons.Outlined.DeviceTablet, productColors.random(), "tablets"),
+        CategoryItem("Home Decor", TablerIcons.Outlined.Lamp, productColors.random(), "home-decoration"),
+        CategoryItem("Sports", TablerIcons.Outlined.BallFootball, productColors.random(), "sports-accessories"),
+        CategoryItem("Women's Fashion", TablerIcons.Outlined.ClothesRack, productColors.random(), "womens-dresses")
     )
 
 
@@ -80,7 +100,7 @@ fun HomeScreen(controller: NavController) {
     }
 
 
-    val listUiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val listUiState by viewModel.homeProductListUiState.collectAsStateWithLifecycle()
 
 
 
@@ -166,7 +186,7 @@ fun HomeScreen(controller: NavController) {
                         item.title,
                         item.icon,
                         item.iconColor,
-                        {}
+                        {controller.navigate(Route.CategoryDetailScreen(item.itemCategory))}
                     )
 
 
@@ -268,5 +288,6 @@ data class CategoryItem(
     val title: String,
     val icon: ImageVector,
     val iconColor: Color,
+    val itemCategory: String
 
     )

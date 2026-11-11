@@ -69,7 +69,7 @@ fun SearchBar(modifier: Modifier = Modifier) {
             },
             active = active,
             onActiveChange = { active = it }, // फोकस होने पर एक्टिव स्टेट चेंज होगी
-            placeholder = { Text(text = "Search your mind") },
+            placeholder = { Text(text = "Search your product") },
             leadingIcon = {
                 Icon(imageVector = Icons.Default.Search, contentDescription = "Search Icon")
             },

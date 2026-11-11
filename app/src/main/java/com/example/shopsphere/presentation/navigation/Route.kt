@@ -18,4 +18,9 @@ sealed class Route {
     )
 
 
+    @Serializable
+    data class CategoryDetailScreen(
+        val category: String
+    )
+
 }

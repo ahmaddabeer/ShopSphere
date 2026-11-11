@@ -37,7 +37,7 @@ fun ProductDetailScreen(
 
     val viewModel: ProductViewModel = hiltViewModel()
 
-    val detailUiState by viewModel.uiStateDetail.collectAsStateWithLifecycle()
+    val detailUiState by viewModel.productDetailUiState.collectAsStateWithLifecycle()
 
     LaunchedEffect(id) {
         viewModel.getProductById(id)

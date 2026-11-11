@@ -1,5 +1,6 @@
 package com.example.shopsphere.data.repository
 
+import com.example.shopsphere.data.model.Product
 import com.example.shopsphere.data.remote.ProductApi
 import javax.inject.Inject
 
@@ -15,7 +16,7 @@ class ProductRepository @Inject constructor(private val api: ProductApi){
         api.searchProducts(query)
 
 
-    suspend fun getProductByCategory(category:String) =
+    suspend fun getProductByCategory(category: String) =
         api.getProductByCategory(category)
 
 }
